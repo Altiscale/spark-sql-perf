@@ -14,7 +14,7 @@ sparkPackageName := "databricks/spark-sql-perf"
 // All Spark Packages need a license
 licenses := Seq("Apache-2.0" -> url("http://opensource.org/licenses/Apache-2.0"))
 
-sparkVersion := "2.0.1"
+sparkVersion := "2.1.1"
 
 sparkComponents ++= Seq("sql", "hive", "mllib")
 
@@ -43,6 +43,10 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 libraryDependencies += "org.yaml" % "snakeyaml" % "1.17"
 
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2"
+
+libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.7.3" % "provided"
+
+libraryDependencies += "org.apache.hadoop" % "hadoop-hdfs" % "2.7.3" % "provided"
 
 fork := true
 
