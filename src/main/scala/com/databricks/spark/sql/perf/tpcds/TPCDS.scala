@@ -33,6 +33,8 @@ class TPCDS(@transient sqlContext: SQLContext)
   with SimpleQueries
   with Tpcds_1_4_Queries
   with Tpcds_2_4_Queries
+  with Tpcds_2_4_69_Queries
+  with Tpcds_2_4_70_Queries
   with Serializable {
 
   def this() = this(SQLContext.getOrCreate(SparkContext.getOrCreate()))
