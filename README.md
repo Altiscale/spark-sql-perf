@@ -61,6 +61,13 @@ val tpcds = new TPCDS (sqlContext = sqlContext)
 ```
 
 ### Run benchmarking queries
+
+The following JARs are required to be included in your Spark job classpath.
+```
+scala-logging-api_2.11-2.1.2.jar
+scala-logging-slf4j_2.11-2.1.2.jar
+```
+
 After setup, users can use `runExperiment` function to run benchmarking queries and record query execution time. Taking TPC-DS as an example, you can start an experiment by using
 
 ```
