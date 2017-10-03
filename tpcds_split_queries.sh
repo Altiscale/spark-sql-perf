@@ -7,8 +7,10 @@ tpcds_resource_dir=$curr_dir/src/main/resources
 tpcds_all_queries=$tpcds_resource_dir/tpcds_2_4
 tpcds_query_dst=$curr_dir/src/main/scala/com/databricks/spark/sql/perf/tpcds
 tpcds_query_template=$tpcds_resource_dir/TPCDS_2_4_template_Queries.scala
+tpcdsdc_scala_template=$tpcds_resource_dir/TPCDSdc.template.scala
 tpcds_scala_template=$tpcds_resource_dir/tpcds_repl_2_4_template.scala
 scala_output_tar=$curr_dir/tpcds_2_4_pXX.scala.tar.gz
+tpcds_classes=$(mktemp)
 
 function usage {
 cat << EOF
@@ -65,6 +67,7 @@ do
       idx_code="p${i}"
     fi
   done
+	echo "with Tpcds_2_4_${idx_code}_Queries" >> $tpcds_classes
   # Generate tpcds code
   qlist=`echo $qlist_tmp | sed "s/^,//"`
   cat $tpcds_query_template | \
@@ -81,10 +84,15 @@ do
     sed "s/QUERYIDX/$idx_code/g" | \
     sed "s:HDFSDEST:$store_qry_result:g" | \
     sed "s/TARGETDATABASE/$use_database/g" > \
-		$curr_dir/tpcds_2_4_${idx_code}.scala
+    $curr_dir/tpcds_2_4_${idx_code}.scala
   let "i++"
 done
-
+# Generate final code
+cp $tpcdsdc_scala_template $tpcds_query_dst/TPCDSdc.scala
+echo "ok - WARNING, you MUST replace INCLUDEMORECLASSES in $tpcds_query_dst/TPCDSdc.scala with the following statements before executing sbt"
+echo "============ DO NOT include me ============"
+cat $tpcds_classes
+echo "============ DO NOT include me ============"
 rm -f xxxtpcds_*
 pushd $curr_dir
 tar -cvzf $scala_output_tar tpcds_2_4_p*.scala

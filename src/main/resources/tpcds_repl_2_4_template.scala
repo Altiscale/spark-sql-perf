@@ -1,10 +1,10 @@
 val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
-import com.databricks.spark.sql.perf.tpcds.TPCDS
+import com.databricks.spark.sql.perf.tpcds.TPCDSdc
 
 sqlContext.sql(s"USE TARGETDATABASE");
 
-val tpcds = new TPCDS (sqlContext = sqlContext)
+val tpcds = new TPCDSdc (sqlContext = sqlContext)
 
 val resultLocation = "hdfs://HDFSDEST/QUERYIDX" // results will be on HDFS
 

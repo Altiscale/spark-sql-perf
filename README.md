@@ -37,8 +37,8 @@ the TPCDS data requires dsdgen built and available on the machines. We have a fo
 you will need. It can be found [here](https://github.com/davies/tpcds-kit).  
 
 ```
-// If not done already, you have to set the path for the results
-spark.config("spark.sql.perf.results", "/tmp/results")
+// OPTIONAL: If not done already, you have to set the path for the results
+// spark.config("spark.sql.perf.results", "/tmp/results")
 
 import com.databricks.spark.sql.perf.tpcds.Tables
 // Tables in TPC-DS benchmark used by experiments.
@@ -71,22 +71,37 @@ scala-logging-slf4j_2.11-2.1.2.jar
 After setup, users can use `runExperiment` function to run benchmarking queries and record query execution time. Taking TPC-DS as an example, you can start an experiment by using
 
 ```
-val experiment = tpcds.runExperiment(tpcds.interactiveQueries)
-experiment.waitForFinish(60*60*10) // optional: wait for results (with timeout)
+import com.databricks.spark.sql.perf.tpcds.TPCDS
+
+val tpcds = new TPCDS (sqlContext = sqlContext)
+// Set:
+val resultLocation = ... // place to write results
+val iterations = 1 // how many iterations of queries to run.
+val queries = tpcds.tpcds2_4Queries // queries to run.
+val timeout = 24*60*60 // timeout, in seconds.
+// Run:
+val experiment = tpcds.runExperiment(
+  queries, 
+  iterations = iterations,
+  resultLocation = resultLocation,
+  forkThread = true)
+experiment.waitForFinish(timeout)
 ```
 
-For every experiment run (i.e. every call of `runExperiment`), Spark SQL Perf will use the timestamp of the start time to identify this experiment. Performance results will be stored in the sub-dir named by the timestamp in the given `spark.sql.perf.results` (for example `/tmp/results/timestamp=1429213883272`). The performance results are stored in the JSON format.
+For every experiment run (i.e. every call of `runExperiment`), Spark SQL Perf will use the timestamp of the start time to identify this experiment. Performance results will be stored in the sub-dir named by the timestamp in the given `resultLocation` (for example `/tmp/tpcds_results/timestamp=1506369471599`). The performance results are stored in the JSON format.
 
 ### Retrieve results
-While the experiment is running you can use `experiment.html` to list the status.  Once the experiment is complete, you can load the results from disk.
+While the experiment is running you can use `experiment.html` to list the status.  Once the experiment is complete, you can load the results from HDFS or disk.
 
 ```
-// Get all experiments results.
-val resultTable = spark.read.json(spark.conf.get("spark.sql.perf.results"))
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+val resultLocation = "hdfs:///tmp/tpcds_results" // place where results were stored from previous step
+val resultTable = spark.read.json(resultLocation)
 resultTable.createOrReplaceTempView("sqlPerformance")
-sqlContext.table("sqlPerformance")
-// Get the result of a particular run by specifying the timestamp of that run.
-sqlContext.table("sqlPerformance").filter("timestamp = 1429132621024")
-// or
-val specificResultTable = spark.read.json(experiment.resultPath)
+val df = sqlContext.table("sqlPerformance").filter("timestamp = 1506369471599").select($"results")
+df.show()
+df.printSchema()
+val df2 = df.withColumn("tpcds_all_queries", explode(col("results")))
+df2.select("tpcds_all_queries.name","tpcds_all_queries.executionTime").collect().foreach(println)
+df2.withColumn("Name", substring(col("tpcds_all_queries.name"), 2, 100)).withColumn("Runtime", (col("tpcds_all_queries.parsingTime") + col("tpcds_all_queries.analysisTime") + col("tpcds_all_queries.optimizationTime") + col("tpcds_all_queries.planningTime") + col("tpcds_all_queries.executionTime")) / 1000.0).select("Name", "Runtime").collect().foreach(println)
 ```
