@@ -8,26 +8,16 @@ tpcds_all_queries=$tpcds_resource_dir/tpcds_2_4
 tpcds_query_dst=$curr_dir/src/main/scala/com/databricks/spark/sql/perf/tpcds
 tpcds_query_template=$tpcds_resource_dir/TPCDS_2_4_template_Queries.scala
 tpcds_scala_template=$tpcds_resource_dir/tpcds_repl_2_4_template.scala
-<<<<<<< HEAD
 scala_output_tar=$curr_dir/tpcds_2_4_pXX.scala.tar.gz
-=======
->>>>>>> 8967e29d619a756e1b1dc675e6e9e0b9431c23a6
 
 function usage {
 cat << EOF
   This script splits the query from the $tpcds_all_queries directory into
-<<<<<<< HEAD
   sub-directories, and generate the code as Scala objects. It also produce the
   scala file with prefix tpcds_2_4_pXX.scala for Spark REPL shell to execute in the
   current directory. A tar.gz $scala_output_tar is created.
   The results are stored in each sub-directory on HDFS based on the -o option.
   You can specify the target database to query via the -d option.
-=======
-    sub-directories, and generate the code as Scala objects. It also produce the
-    scala file with prefix tpcds_2_4_pXX.scala for Spark REPL shell to execute in the
-    current directory. The results are stored in each sub-directory on HDFS based on the -o option.
-    You can specify the target database to query via the -d option.
->>>>>>> 8967e29d619a756e1b1dc675e6e9e0b9431c23a6
 
   Usage: 
 	  $0 -o hdfs_output_dir -d tpcds_database_name
