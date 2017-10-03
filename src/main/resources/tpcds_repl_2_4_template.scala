@@ -23,4 +23,3 @@ val experiment = tpcds.runExperiment(
 experiment.waitForFinish(timeout)
 
 exit
-
