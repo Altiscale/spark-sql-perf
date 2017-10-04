@@ -2,11 +2,15 @@ val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
 import com.databricks.spark.sql.perf.tpcds.TPCDSdc
 
-sqlContext.sql(s"USE TARGETDATABASE");
+val usrDatabase = spark.conf.get("spark.sql.perf.tpcds.database") 
+
+val hdfsLoc = spark.conf.get("spark.sql.perf.tpcds.results") 
+
+sqlContext.sql("USE " + usrDatabase);
 
 val tpcds = new TPCDSdc (sqlContext = sqlContext)
 
-val resultLocation = "hdfs://HDFSDEST/QUERYIDX" // results will be on HDFS
+val resultLocation = "hdfs://" + hdfsLoc + "/QUERYIDX" // results will be on HDFS
 
 val iterations = 1 // how many iterations of queries to run.
 
@@ -22,4 +26,3 @@ val experiment = tpcds.runExperiment(
 
 experiment.waitForFinish(timeout)
 
-exit
