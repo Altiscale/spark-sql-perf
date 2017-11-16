@@ -29,7 +29,7 @@
  where cr_returned_date_sk = d_date_sk
     and d_date between cast('2000-08-23' as date) and
                        (cast('2000-08-23' as date) + interval '30' day)
-	group by cr_call_center_sk),
+ group by cr_call_center_sk),
  ws as
  (select wp_web_page_sk, sum(ws_ext_sales_price) as sales, sum(ws_net_profit) as profit
  from web_sales, date_dim, web_page
@@ -65,7 +65,7 @@
  from   ws left join wr
         on  ws.wp_web_page_sk = wr.wp_web_page_sk
  ) x
- group by rollup(channel, id)
+ group by channel, id WITH ROLLUP
  order by channel, id
  limit 100
             
