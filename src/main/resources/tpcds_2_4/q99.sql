@@ -1,7 +1,7 @@
 --q99.sql--
 
  select
-    substr(w_warehouse_name,1,20), sm_type, cc_name
+    substr(w_warehouse_name,1,20) as warehouse_name, sm_type, cc_name
    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk <= 30 ) then 1 else 0 end)  as `30 days`
    ,sum(case when (cs_ship_date_sk - cs_sold_date_sk > 30) and
                   (cs_ship_date_sk - cs_sold_date_sk <= 60) then 1 else 0 end )  as `31-60 days`
@@ -18,8 +18,7 @@
  and cs_warehouse_sk   = w_warehouse_sk
  and cs_ship_mode_sk   = sm_ship_mode_sk
  and cs_call_center_sk = cc_call_center_sk
- group by
-    substr(w_warehouse_name,1,20), sm_type, cc_name
- order by substr(w_warehouse_name,1,20), sm_type, cc_name
+ group by substr(w_warehouse_name,1,20), sm_type, cc_name
+ order by warehouse_name, sm_type, cc_name
  limit 100
             

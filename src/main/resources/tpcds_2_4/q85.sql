@@ -1,7 +1,8 @@
 --q85.sql--
 
  select
-    substr(r_reason_desc,1,20), avg(ws_quantity), avg(wr_refunded_cash), avg(wr_fee)
+    substr(r_reason_desc,1,20) as reason_desc, avg(ws_quantity) as avg_ws_quantity, 
+      avg(wr_refunded_cash) as avg_wr_refunded_cash, avg(wr_fee) as avg_wr_fee
  from web_sales, web_returns, web_page, customer_demographics cd1,
       customer_demographics cd2, customer_address, date_dim, reason
  where ws_web_page_sk = wp_web_page_sk
@@ -74,9 +75,9 @@
     )
    )
  group by r_reason_desc
- order by substr(r_reason_desc,1,20)
-        ,avg(ws_quantity)
-        ,avg(wr_refunded_cash)
-        ,avg(wr_fee)
+ order by reason_desc
+        ,avg_ws_quantity
+        ,avg_wr_refunded_cash
+        ,avg_wr_fee
  limit 100
             
