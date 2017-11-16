@@ -93,4 +93,3 @@ select channel, i_brand_id,i_class_id,i_category_id,sum(sales), sum(number_sales
  order by channel,i_brand_id,i_class_id,i_category_id
  limit 100
             
-;

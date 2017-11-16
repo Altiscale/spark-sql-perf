@@ -1,10 +1,8 @@
 --q8.sql--
 
- select s_store_name, sum(ss_net_profit)
- from store_sales, date_dim, store,
-     (SELECT ca_zip
-       from (
-       (SELECT substr(ca_zip,1,5) ca_zip FROM customer_address
+with
+x_zips as
+(SELECT substr(ca_zip,1,5) ca_zip FROM customer_address
           WHERE substr(ca_zip,1,5) IN (
                '24128','76232','65084','87816','83926','77556','20548',
                '26231','43848','15126','91137','61265','98294','25782',
@@ -63,8 +61,8 @@
                '46820','88885','84935','69035','83144','47537','56616',
                '94983','48033','69952','25486','61547','27385','61860',
                '58048','56910','16807','17871','35258','31387','35458',
-               '35576'))
-       INTERSECT
+               '35576')),
+y_zips as            
        (select ca_zip
           FROM
             (SELECT substr(ca_zip,1,5) ca_zip,count(*) cnt
@@ -72,9 +70,11 @@
               WHERE ca_address_sk = c_current_addr_sk and
                     c_preferred_cust_flag='Y'
               group by ca_zip
-              having count(*) > 10) A1)
-         ) A2
-      ) V1
+              having count(*) > 10) A1),
+intersected_zips as
+(select x_zips.ca_zip as ca_zip from x_zips,y_zips where x_zips.ca_zip = y_zips.ca_zip)
+ select s_store_name, sum(ss_net_profit)
+ from store_sales, date_dim, store, intersected_zips V1
  where ss_store_sk = s_store_sk
   and ss_sold_date_sk = d_date_sk
   and d_qoy = 2 and d_year = 1998
