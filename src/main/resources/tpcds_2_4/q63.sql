@@ -16,11 +16,11 @@
          and ((    i_category in ('Books','Children','Electronics')
                and i_class in ('personal','portable','reference','self-help')
                and i_brand in ('scholaramalgamalg #14','scholaramalgamalg #7',
- 		                  'exportiunivamalg #9','scholaramalgamalg #9'))
+                  'exportiunivamalg #9','scholaramalgamalg #9'))
             or(    i_category in ('Women','Music','Men')
                and i_class in ('accessories','classical','fragrances','pants')
                and i_brand in ('amalgimporto #1','edu packscholar #1','exportiimporto #1',
- 		                 'importoamalg #1')))
+                 'importoamalg #1')))
  group by i_manager_id, d_moy) tmp1
  where case when avg_monthly_sales > 0 then abs (sum_sales - avg_monthly_sales) / avg_monthly_sales else null end > 0.1
  order by i_manager_id

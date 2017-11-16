@@ -1,7 +1,7 @@
 --q55.sql--
 
 select i_brand_id brand_id, i_brand brand,
- 	sum(ss_ext_sales_price) ext_price
+ sum(ss_ext_sales_price) ext_price
  from date_dim, store_sales, item
  where d_date_sk = ss_sold_date_sk
  	and ss_item_sk = i_item_sk

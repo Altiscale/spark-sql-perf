@@ -18,7 +18,7 @@
      (i_category in ('Women','Music','Men') and
       i_class in ('accessories','classical','fragrances','pants') and
       i_brand in ('amalgimporto #1','edu packscholar #1','exportiimporto #1',
- 		'importoamalg #1')))
+ 	'importoamalg #1')))
      group by i_manufact_id, d_qoy ) tmp1
  where case when avg_quarterly_sales > 0
  	then abs (sum_sales - avg_quarterly_sales)/ avg_quarterly_sales

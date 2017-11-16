@@ -1,7 +1,8 @@
 --q27.sql--
 
  select i_item_id,
-        s_state, grouping(s_state) g_state,
+        s_state, 
+        (case when s_state is null then 1 else 0 end) as g_state,
         avg(ss_quantity) agg1,
         avg(ss_list_price) agg2,
         avg(ss_coupon_amt) agg3,
@@ -16,7 +17,7 @@
        cd_education_status = 'College' and
        d_year = 2002 and
        s_state in ('TN','TN', 'TN', 'TN', 'TN', 'TN')
- group by rollup (i_item_id, s_state)
+ group by i_item_id, s_state with rollup
  order by i_item_id, s_state
  limit 100
             

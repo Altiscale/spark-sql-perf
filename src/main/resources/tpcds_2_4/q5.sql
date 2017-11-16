@@ -114,7 +114,7 @@
         (profit - profit_loss) as profit
  FROM wsr
  ) x
- GROUP BY ROLLUP (channel, id)
+ GROUP BY channel, id WITH ROLLUP
  ORDER BY channel, id
  LIMIT 100
             
