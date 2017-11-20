@@ -12,14 +12,18 @@
  select
     c_customer_id,c_salutation,c_first_name,c_last_name,ca_street_number,ca_street_name,
     ca_street_type,ca_suite_number,ca_city,ca_county,ca_state,ca_zip,ca_country,
-    ca_gmt_offset,ca_location_type,ctr_total_return
- from customer_total_return ctr1, customer_address, customer
- where ctr1.ctr_total_return > (select avg(ctr_total_return)*1.2
- 			  from customer_total_return ctr2
-                  	  where ctr1.ctr_state = ctr2.ctr_state)
-       and ca_address_sk = c_current_addr_sk
-       and ca_state = 'GA'
-       and ctr1.ctr_customer_sk = c_customer_sk
+    ca_gmt_offset,ca_location_type,ctr1.ctr_total_return
+ from customer_total_return ctr1 JOIN customer ON
+       ctr1.ctr_customer_sk = c_customer_sk
+      JOIN customer_address ON
+       ca_address_sk = c_current_addr_sk
+      JOIN customer_total_return ctr2 ON
+       ctr1.ctr_state = ctr2.ctr_state
+ where ca_state = 'GA'
+ group by c_customer_id,c_salutation,c_first_name,c_last_name,ca_street_number,ca_street_name,
+    ca_street_type,ca_suite_number,ca_city,ca_county,ca_state,ca_zip,ca_country,
+    ca_gmt_offset,ca_location_type,ctr1.ctr_total_return 
+ having ctr1.ctr_total_return > avg(ctr2.ctr_total_return)*1.2
  order by c_customer_id,c_salutation,c_first_name,c_last_name,ca_street_number,ca_street_name
                    ,ca_street_type,ca_suite_number,ca_city,ca_county,ca_state,ca_zip,ca_country,ca_gmt_offset
                   ,ca_location_type,ctr_total_return

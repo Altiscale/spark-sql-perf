@@ -9,7 +9,7 @@
     (c.c_current_addr_sk = ca.ca_address_sk)
     JOIN customer_demographics ON
     (cd_demo_sk = c.c_current_cdemo_sk)
-    LEFT SEMI JOIN (select * from store_sales JOIN date_dim ON
+    LEFT SEMI JOIN (select ss_customer_sk from store_sales JOIN date_dim ON
                 (ss_sold_date_sk = d_date_sk) 
                 WHERE d_year = 2001 and
                 d_moy between 4 and 4+2) ssdd
