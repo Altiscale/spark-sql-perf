@@ -24,7 +24,7 @@
        c_birth_month in (1,6,8,9,12,2) and
        d_year = 1998 and
        ca_state  in ('MS','IN','ND','OK','NM','VA','MS')
- group by rollup (i_item_id, ca_country, ca_state, ca_county)
+ group by i_item_id, ca_country, ca_state, ca_county with rollup 
  order by ca_country, ca_state, ca_county, i_item_id
  LIMIT 100
             

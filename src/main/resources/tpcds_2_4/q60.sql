@@ -1,10 +1,12 @@
 --q60.sql--
 
- with ss as (
+ with
+category_constraint as (select i_item_id as cc_i_item_id from item where i_category in ('Music')),
+ss as (
     select i_item_id,sum(ss_ext_sales_price) total_sales
-    from store_sales, date_dim, customer_address, item
+    from store_sales, date_dim, customer_address, item, category_constraint
     where
-        i_item_id in (select i_item_id from item where i_category in ('Music'))
+        i_item_id = cc_i_item_id
     and     ss_item_sk              = i_item_sk
     and     ss_sold_date_sk         = d_date_sk
     and     d_year                  = 1998
@@ -14,9 +16,9 @@
     group by i_item_id),
   cs as (
     select i_item_id,sum(cs_ext_sales_price) total_sales
-    from catalog_sales, date_dim, customer_address, item
+    from catalog_sales, date_dim, customer_address, item, category_constraint
     where
-        i_item_id in (select i_item_id from item where i_category in ('Music'))
+        i_item_id = cc_i_item_id
     and     cs_item_sk              = i_item_sk
     and     cs_sold_date_sk         = d_date_sk
     and     d_year                  = 1998
@@ -26,9 +28,9 @@
     group by i_item_id),
   ws as (
     select i_item_id,sum(ws_ext_sales_price) total_sales
-    from web_sales, date_dim, customer_address, item
+    from web_sales, date_dim, customer_address, item, category_constraint
     where
-        i_item_id in (select i_item_id from item where i_category in ('Music'))
+        i_item_id = cc_i_item_id
     and     ws_item_sk              = i_item_sk
     and     ws_sold_date_sk         = d_date_sk
     and     d_year                  = 1998
