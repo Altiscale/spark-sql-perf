@@ -1,7 +1,7 @@
 --q62.sql--
 
  select
-   substr(w_warehouse_name,1,20)
+   substr(w_warehouse_name,1,20) short_warehouse_name
   ,sm_type
   ,web_name
   ,sum(case when (ws_ship_date_sk - ws_sold_date_sk <= 30 ) then 1 else 0 end)  as `30 days`
@@ -23,6 +23,6 @@
  group by
     substr(w_warehouse_name,1,20), sm_type, web_name
  order by
-    substr(w_warehouse_name,1,20), sm_type, web_name
+    short_warehouse_name, sm_type, web_name
  limit 100
             

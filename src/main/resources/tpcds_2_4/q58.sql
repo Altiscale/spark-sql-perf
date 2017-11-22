@@ -1,37 +1,30 @@
 --q58.sql--
 
- with ss_items as
- (select i_item_id item_id, sum(ss_ext_sales_price) ss_item_rev
- from store_sales, item, date_dim
- where ss_item_sk = i_item_sk
-   and d_date in (select d_date
-                  from date_dim
-                  where d_week_seq = (select d_week_seq
+ with
+
+date_constraint as (select d_week_seq as dc_seq
                                       from date_dim
-                                      where d_date = cast('2000-01-03' as date)))
+                                      where d_date = cast('2000-01-03' as date)),
+ss_items as
+ (select i_item_id item_id, sum(ss_ext_sales_price) ss_item_rev
+ from store_sales, item, date_dim, date_constraint
+ where ss_item_sk = i_item_sk
+   and d_date = date_constraint.dc_seq
    and ss_sold_date_sk   = d_date_sk
  group by i_item_id),
- cs_items as
+cs_items as
  (select i_item_id item_id
         ,sum(cs_ext_sales_price) cs_item_rev
-  from catalog_sales, item, date_dim
+  from catalog_sales, item, date_dim, date_constraint
  where cs_item_sk = i_item_sk
-  and  d_date in (select d_date
-                  from date_dim
-                  where d_week_seq = (select d_week_seq
-                                      from date_dim
-                                      where d_date = cast('2000-01-03' as date)))
+  and d_date = date_constraint.dc_seq
   and  cs_sold_date_sk = d_date_sk
  group by i_item_id),
  ws_items as
  (select i_item_id item_id, sum(ws_ext_sales_price) ws_item_rev
-  from web_sales, item, date_dim
+  from web_sales, item, date_dim, date_constraint
  where ws_item_sk = i_item_sk
-  and  d_date in (select d_date
-                  from date_dim
-                  where d_week_seq =(select d_week_seq
-                                     from date_dim
-                                     where d_date = cast('2000-01-03' as date)))
+  and d_date = date_constraint.dc_seq
   and ws_sold_date_sk   = d_date_sk
  group by i_item_id)
  select ss_items.item_id

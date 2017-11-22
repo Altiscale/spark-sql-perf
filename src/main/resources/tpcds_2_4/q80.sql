@@ -64,7 +64,7 @@
       select
         'web channel' as channel, concat('web_site', web_site_id) as id, sales, returns, profit
       from  wsr) x
- group by rollup (channel, id)
+ group by channel, id with rollup 
  order by channel, id
  limit 100
             

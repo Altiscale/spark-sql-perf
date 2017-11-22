@@ -49,10 +49,10 @@
  where (coalesce(ws_qty,0)>0 or coalesce(cs_qty, 0)>0) and ss_sold_year=2000
  order by
    ss_sold_year, ss_item_sk, ss_customer_sk,
-   ss_qty desc, ss_wc desc, ss_sp desc,
+   store_qty desc, store_wholesale_cost desc, store_sales_price desc,
    other_chan_qty,
    other_chan_wholesale_cost,
    other_chan_sales_price,
-   round(ss_qty/(coalesce(ws_qty+cs_qty,1)),2)
+   ratio
   limit 100
             
