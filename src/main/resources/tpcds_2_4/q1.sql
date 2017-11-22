@@ -1,3 +1,5 @@
+--q1.sql--
+
 WITH customer_total_return AS
    (SELECT sr_customer_sk AS ctr_customer_sk, sr_store_sk AS ctr_store_sk,
            sum(sr_return_amt) AS ctr_total_return
